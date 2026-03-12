@@ -2,6 +2,12 @@
   margin: 0 auto;
   width: 640px;
 }
+
+.title {
+  display: flex;
+  justify-content: center;
+}
+
 .number {
   text-align: center;
 }

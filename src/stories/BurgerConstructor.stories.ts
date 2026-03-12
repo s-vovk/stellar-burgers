@@ -20,7 +20,7 @@ export const DefaultConstructor: Story = {
     constructorItems: { bun: null, ingredients: [] },
     orderRequest: false,
     price: 0,
-    orderModalData: null,
+    orderModalData: undefined,
     onOrderClick: () => {},
     closeOrderModal: () => {}
   }

@@ -2,20 +2,18 @@ import { FC, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { getIngredientsState, getOrderInfo } from '@selectors';
 
-export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const orderData = {
-    createdAt: '',
-    ingredients: [],
-    _id: '',
-    status: '',
-    name: '',
-    updatedAt: 'string',
-    number: 0
-  };
+type Props = {
+  isModal?: boolean;
+};
 
-  const ingredients: TIngredient[] = [];
+export const OrderInfo: FC<Props> = ({ isModal }) => {
+  const { number } = useParams();
+  const orderData = useSelector((state) => getOrderInfo(state, number));
+  const { ingredients } = useSelector(getIngredientsState);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
@@ -63,5 +61,5 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  return <OrderInfoUI orderInfo={orderInfo} isModal={isModal} />;
 };
