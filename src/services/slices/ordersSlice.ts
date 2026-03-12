@@ -1,4 +1,4 @@
-import { getFeedsApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi } from '@api';
 import {
   createAsyncThunk,
   createSelector,
@@ -27,6 +27,11 @@ export const getOrders = createAsyncThunk('orders/getAll', async () =>
   getFeedsApi()
 );
 
+export const getOrderByNumber = createAsyncThunk(
+  'orders/getOrderByNumber',
+  async (number: number | string) => getOrderByNumberApi(Number(number))
+);
+
 const ordersSlice = createSlice({
   name: 'orders',
   initialState,
@@ -46,6 +51,18 @@ const ordersSlice = createSlice({
         state.orders = action.payload.orders;
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
+      })
+      .addCase(getOrderByNumber.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getOrderByNumber.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || null;
+      })
+      .addCase(getOrderByNumber.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload.orders;
       });
   }
 });

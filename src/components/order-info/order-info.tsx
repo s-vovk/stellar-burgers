@@ -1,19 +1,28 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getIngredientsState, getOrderInfo } from '@selectors';
+import { AppDispatch } from 'src/services/store';
+import { getOrderByNumber } from '../../services/slices/ordersSlice';
 
 type Props = {
   isModal?: boolean;
 };
 
 export const OrderInfo: FC<Props> = ({ isModal }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const { number } = useParams();
   const orderData = useSelector((state) => getOrderInfo(state, number));
   const { ingredients } = useSelector(getIngredientsState);
+
+  useEffect(() => {
+    if (number && !orderData) {
+      dispatch(getOrderByNumber(number));
+    }
+  }, []);
 
   /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {

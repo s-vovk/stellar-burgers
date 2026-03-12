@@ -31,17 +31,30 @@ export const getUser = createAsyncThunk('user/get', async () => getUserApi());
 
 export const loginUser = createAsyncThunk(
   'user/login',
-  async (data: TLoginData) => loginUserApi(data)
+  async (data: TLoginData) => {
+    const response = await loginUserApi(data);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    setCookie('accessToken', response.accessToken);
+    return response;
+  }
 );
 
 export const registerUser = createAsyncThunk(
   'user/register',
-  async (data: TRegisterData) => registerUserApi(data)
+  async (data: TRegisterData) => {
+    const response = await registerUserApi(data);
+    localStorage.setItem('refreshToken', response.refreshToken);
+    setCookie('accessToken', response.accessToken);
+    return response;
+  }
 );
 
-export const logoutUser = createAsyncThunk('user/logout', async () =>
-  logoutApi()
-);
+export const logoutUser = createAsyncThunk('user/logout', async () => {
+  const response = await logoutApi();
+  localStorage.removeItem('refreshToken');
+  deleteCookie('accessToken');
+  return response;
+});
 
 export const updateUser = createAsyncThunk(
   'user/update',
@@ -81,8 +94,6 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-        setCookie('accessToken', action.payload.accessToken);
       })
       .addCase(registerUser.pending, (state) => {
         state.loading = true;
@@ -95,8 +106,6 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload.user;
-        localStorage.setItem('refreshToken', action.payload.refreshToken);
-        setCookie('accessToken', action.payload.accessToken);
       })
       .addCase(updateUser.pending, (state) => {
         state.loading = true;
@@ -118,14 +127,12 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.error.message || null;
       })
-      .addCase(logoutUser.fulfilled, (state, action) => {
+      .addCase(logoutUser.fulfilled, (state) => {
         state.loading = false;
         state.user = undefined;
-        localStorage.removeItem('refreshToken');
-        deleteCookie('accessToken');
       })
-      .addCase(getUserOrders.pending, (state) => {})
-      .addCase(getUserOrders.rejected, (state, action) => {})
+      .addCase(getUserOrders.pending, () => {})
+      .addCase(getUserOrders.rejected, () => {})
       .addCase(getUserOrders.fulfilled, (state, action) => {
         state.orders = action.payload;
       });

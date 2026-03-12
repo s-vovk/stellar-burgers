@@ -85,6 +85,9 @@ export const App = () => {
           <Route path='/profile/orders' element={<ProtectedRoute />}>
             <Route path='/profile/orders' element={<ProfileOrders />} />
           </Route>
+          <Route path='/profile/orders/:number' element={<ProtectedRoute />}>
+            <Route path='/profile/orders/:number' element={<OrderInfo />} />
+          </Route>
         </Route>
       </Routes>
 
