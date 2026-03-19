@@ -7,7 +7,7 @@ import {
 import { TOrder } from '@utils-types';
 import { RootState } from '../store';
 
-type TOrdersState = {
+export type TOrdersState = {
   loading: boolean;
   error: null | string;
   orders: TOrder[];
@@ -15,7 +15,7 @@ type TOrdersState = {
   totalToday: number;
 };
 
-const initialState: TOrdersState = {
+export const initialState: TOrdersState = {
   loading: false,
   error: null,
   orders: [],
@@ -71,7 +71,9 @@ export const getOrdersState = (state: RootState) => state.orders;
 export const getOrderInfo = createSelector(
   [getOrdersState, (_, number) => number],
   (state, number) =>
-    state.orders.find((order: TOrder) => String(order.number) === number)
+    state.orders.find(
+      (order: TOrder) => String(order.number) === String(number)
+    )
 );
 
 export const ordersReducer = ordersSlice.reducer;

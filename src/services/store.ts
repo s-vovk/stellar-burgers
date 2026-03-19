@@ -10,7 +10,7 @@ import { constructorItemsReducer } from './slices/constructorItemsSlice';
 import { ordersReducer } from './slices/ordersSlice';
 import { userReducer } from './slices/userSlice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
   constructorItems: constructorItemsReducer,
   orders: ordersReducer,
