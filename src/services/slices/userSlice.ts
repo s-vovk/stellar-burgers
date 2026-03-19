@@ -13,18 +13,22 @@ import {
 } from '@api';
 import { deleteCookie, setCookie } from '../../utils/cookie';
 
-type TUserState = {
+export type TUserState = {
   user?: TUser;
   loading: boolean;
   error: string | null;
   orders: TOrder[];
+  ordersLoading: boolean;
+  ordersError: string | null;
 };
 
-const initialState: TUserState = {
+export const initialState: TUserState = {
   user: undefined,
   loading: false,
   error: null,
-  orders: []
+  orders: [],
+  ordersLoading: false,
+  ordersError: null
 };
 
 export const getUser = createAsyncThunk('user/get', async () => getUserApi());
@@ -131,9 +135,16 @@ const userSlice = createSlice({
         state.loading = false;
         state.user = undefined;
       })
-      .addCase(getUserOrders.pending, () => {})
-      .addCase(getUserOrders.rejected, () => {})
+      .addCase(getUserOrders.pending, (state) => {
+        state.ordersLoading = true;
+        state.ordersError = null;
+      })
+      .addCase(getUserOrders.rejected, (state, action) => {
+        state.ordersLoading = false;
+        state.ordersError = action.error.message || null;
+      })
       .addCase(getUserOrders.fulfilled, (state, action) => {
+        state.ordersLoading = false;
         state.orders = action.payload;
       });
   }

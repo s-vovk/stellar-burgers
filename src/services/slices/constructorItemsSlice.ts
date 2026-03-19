@@ -3,7 +3,7 @@ import { TConstructorIngredient, TOrder } from '@utils-types';
 import { RootState } from '../store';
 import { orderBurgerApi } from '@api';
 
-type TConstructorItems = {
+export type TConstructorItems = {
   bun?: TConstructorIngredient;
   ingredients: TConstructorIngredient[];
   orderRequest: boolean;
@@ -11,7 +11,7 @@ type TConstructorItems = {
   lastOrder?: Omit<TOrder, 'ingredients'>;
 };
 
-const initialState: TConstructorItems = {
+export const initialState: TConstructorItems = {
   bun: undefined,
   ingredients: [],
   orderRequest: false,
